@@ -3,8 +3,6 @@ package se.ads;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.UpdateManager;
-import org.apache.batik.dom.events.DOMMouseEvent;
-import org.apache.batik.dom.svg.SVGOMPoint;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
@@ -16,11 +14,7 @@ import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-import org.w3c.dom.svg.SVGLocatable;
-import org.w3c.dom.svg.SVGMatrix;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,10 +41,12 @@ public class SVGApplication {
     protected Document doc;
     protected DrawElement currentElementType;
     protected int x = 0, y = 0;
+    ApplicationContext ctx = new ApplicationContext();
 
     public static void main(String[] args) {
         // Create a new JFrame.
         JFrame f = new JFrame("SuperModel");
+
         SVGApplication app = new SVGApplication(f);
 
         // Add components to the frame.
@@ -92,6 +88,7 @@ public class SVGApplication {
         doc = impl.createDocument(SVG_NS, "svg", null);
         svgCanvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
         svgCanvas.setDocument(doc);
+        ctx.setDoc(doc);
 
         // Set the button action.
         buttonLoad.addActionListener(new ActionListener() {
@@ -109,8 +106,10 @@ public class SVGApplication {
             }
         });
 
-        buttonNewClass.addActionListener(ae -> currentElementType = new DrawClassElement(doc));
-        buttonNewLine.addActionListener(ae -> currentElementType = new DrawLineElement(doc));
+        buttonNewClass.addActionListener(ae ->
+                ctx.setCurrentElementType(new DrawClassElement(doc)));
+        buttonNewLine.addActionListener(ae ->
+                ctx.setCurrentElementType(new DrawLineElement(doc)));
 
         // Set the JSVGCanvas listeners.
         svgCanvas.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
@@ -148,10 +147,10 @@ public class SVGApplication {
                 Element elt = svgCanvas.getSVGDocument().getElementById("glasspane");
                 EventTarget target = (EventTarget) elt;
 
-                target.addEventListener("mousedown", new OnDownAction(), false);
-                target.addEventListener("mousemove", new OnMoveAction(), false);
-                target.addEventListener("mouseup", new OnUpAction(), false);
-                target.addEventListener("mouseout", new OnUpAction(), false);
+                target.addEventListener("mousedown", new OnDownAction(ctx), false);
+                target.addEventListener("mousemove", new OnMoveAction(ctx), false);
+                target.addEventListener("mouseup", new OnUpAction(ctx), false);
+                target.addEventListener("mouseout", new OnUpAction(ctx), false);
                 //target.addEventListener("mouseover", new OnOverAction(), false);
                 //target.addEventListener("click", new OnClickAction(), false);
 
@@ -197,73 +196,4 @@ public class SVGApplication {
                  svgRoot.appendChild(rectangle);
 
              }
-
-
-    protected int drag;
-    protected Element selectedItem;
-    protected SVGOMPoint initialDragPoint;
-    protected final int DRAG_UP = 0;
-    protected final int DRAG_DOWN = 1;
-
-    public class OnDownAction implements org.w3c.dom.events.EventListener {
-
-        @Override
-        public void handleEvent(Event evt) {
-            SVGLocatable thisNode = (SVGLocatable) evt.getTarget();
-            selectedItem = (Element) evt.getTarget();
-            drag = DRAG_DOWN;
-
-
-            DOMMouseEvent elEvt = (DOMMouseEvent) evt;
-            int nowToX = elEvt.getClientX();
-            int nowToY = elEvt.getClientY();
-
-            SVGOMPoint pt = new SVGOMPoint(nowToX, nowToY);
-            SVGMatrix mat = thisNode.getScreenCTM();  // elem -> screen
-            mat = mat.inverse();                  // screen -> elem
-            initialDragPoint = (SVGOMPoint)pt.matrixTransform(mat);
-
-            Element svgRoot = doc.getDocumentElement();
-            if (currentElementType != null) {
-                Element e = currentElementType.placeNew(nowToX, nowToY);
-                svgRoot.appendChild(e);
-            }
-        }
-    }
-    public class OnUpAction implements EventListener {
-           public void handleEvent(Event evt) {
-               drag = DRAG_UP;
-
-
-
-           }
-    }
-
-  public class OnMoveAction implements EventListener{
-
-      @Override
-      public void handleEvent(Event evt) {
-          if (drag == DRAG_DOWN){
-              DOMMouseEvent elEvt = (DOMMouseEvent) evt;
-              int nowToX = elEvt.getClientX();
-              int nowToY = elEvt.getClientY();
-              SVGOMPoint pt = new SVGOMPoint(nowToX, nowToY);
-              SVGMatrix mat = ((SVGLocatable)evt.getTarget()).getScreenCTM();
-
-              mat = mat.inverse();
-              SVGOMPoint dragpt = (SVGOMPoint)pt.matrixTransform(mat);
-
-              Element element = (Element) evt.getTarget();
-              float newX = dragpt.getX();
-              if (dragpt.getX() < initialDragPoint.getX()){
-                  newX = newX - 10;
-                  System.out.println("left");
-              }
-              System.out.println("initialX:" + initialDragPoint.getX());
-              System.out.println("x:" + element.getAttribute("x") + " y:" + element.getAttribute("y") + " -> " + dragpt.getX() + " y:"+dragpt.getY());
-              element.setAttribute("x", ""+ newX);
-          }
-      }
-  }
-
 }

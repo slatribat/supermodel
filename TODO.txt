@@ -2,5 +2,3 @@ skapa upp Element från xml
 spara elementen där de placerats ut.
 flytta element i alla riktningar via deras egna eventlisteners https://wiki.apache.org/xmlgraphics-batik/DragTutorial
 elementsInView - plocka ut rätt element instans
-glasspane - http://batik.2283329.n4.nabble.com/Drag-amp-Drop-with-batik-td2970848.html
-eller background element 100width. http://batik.2283329.n4.nabble.com/move-shapes-in-the-Canvas-td2973023.html
