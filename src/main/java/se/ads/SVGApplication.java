@@ -1,9 +1,7 @@
 package se.ads;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
-import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.UpdateManager;
-import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.swing.JSVGCanvas;
 import org.apache.batik.swing.gvt.GVTTreeRendererAdapter;
 import org.apache.batik.swing.gvt.GVTTreeRendererEvent;
@@ -11,17 +9,16 @@ import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
+import org.w3c.dom.svg.SVGDocument;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -39,14 +36,11 @@ public class SVGApplication {
     protected JLabel label = new JLabel();
     protected UpdateManager updateManager;
     protected Document doc;
-    protected DrawElement currentElementType;
     protected int x = 0, y = 0;
     ApplicationContext ctx = new ApplicationContext();
 
     public static void main(String[] args) {
-        // Create a new JFrame.
         JFrame f = new JFrame("SuperModel");
-
         SVGApplication app = new SVGApplication(f);
 
         // Add components to the frame.
@@ -123,6 +117,12 @@ public class SVGApplication {
         });
         Element svgRoot = doc.getDocumentElement();
 
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                calculateSize((SVGDocument)doc);
+            }
+        });
+
         svgCanvas.addGVTTreeBuilderListener(new GVTTreeBuilderAdapter() {
             public void gvtBuildStarted(GVTTreeBuilderEvent e) {
                 label.setText("Build Started...");
@@ -162,18 +162,21 @@ public class SVGApplication {
 
                 svgRoot.appendChild(g);
 
-                Element elt2 = svgCanvas.getSVGDocument().getElementById("rectangles");
-                EventTarget t2 = (EventTarget) elt2;
-
                 Point2D p = getCanvasCoordinate(new Point2D.Float(x, y));
-                GraphicsNode gn = svgCanvas.getGraphicsNode().nodeHitAt(p);
-                BridgeContext bc =
-                        ((JSVGCanvas) svgCanvas).getUpdateManager().getBridgeContext();
 
             }
         });
 
         return panel;
+    }
+
+    private void calculateSize(SVGDocument doc) {
+        Dimension d = frame.getSize();
+
+        doc.getRootElement().setAttributeNS(null,
+                SVGConstants.SVG_WIDTH_ATTRIBUTE, d.getWidth() + "");
+        doc.getRootElement().setAttributeNS(null,
+                SVGConstants.SVG_HEIGHT_ATTRIBUTE, d.getHeight() + "");
     }
 
     private Point2D getCanvasCoordinate(Point2D p) {

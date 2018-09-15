@@ -11,6 +11,10 @@ public class DrawRectElement implements DrawElement{
     private Document doc;
     private Element element;
     private ApplicationContext ctx;
+    private String styleType = "stroke";
+    private String opacity = "0.1";
+    private String color = "red";
+    private String fillColor = "black";
 
     public DrawRectElement(Document doc, ApplicationContext applicationContext){
         this.doc = doc;
@@ -18,11 +22,13 @@ public class DrawRectElement implements DrawElement{
     }
     public Element create(){
         this.element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
-        element.setAttributeNS(null, "x", "10");
-        element.setAttributeNS(null, "y", "20");
-        element.setAttributeNS(null, "width", "100");
-        element.setAttributeNS(null, "height", "50");
-        element.setAttributeNS(null, "style", "fill:red");
+        element.setAttribute("x", "10");
+        element.setAttribute("y", "20");
+        element.setAttribute("width", "100");
+        element.setAttribute("height", "50");
+        element.setAttribute("style", styleType+":"+color);
+        element.setAttribute("fill-opacity", opacity);
+        element.setAttribute("fill", fillColor);
 
         EventTarget target = (EventTarget) element;
         target.addEventListener("mousedown", new OnDownAction(ctx), false);
@@ -49,4 +55,35 @@ public class DrawRectElement implements DrawElement{
         return element;
     }
 
+    public String getStyleType() {
+        return styleType;
+    }
+
+    public void setStyleType(String styleType) {
+        this.styleType = styleType;
+    }
+
+    public String getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(String opacity) {
+        this.opacity = opacity;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getFillColor() {
+        return fillColor;
+    }
+
+    public void setFillColor(String fillColor) {
+        this.fillColor = fillColor;
+    }
 }

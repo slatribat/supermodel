@@ -2,3 +2,8 @@ skapa upp Element från xml
 spara elementen där de placerats ut.
 ändra färg
 ändra längd på line
+lägg menyknapp på objekt
+menyknapp
+ - sätt text
+ - sätt färg
+ - sätt storlek

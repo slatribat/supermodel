@@ -29,11 +29,9 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
         mat = mat.inverse();                  // screen -> elem
         ctx.setInitialDragPoint((SVGOMPoint)pt.matrixTransform(mat));
 
-        Element svgRoot = ctx.getDoc().getDocumentElement();
         if (ctx.getCurrentElementType() != null) {
             System.out.println("Appendchild at: X:" + ctx.getInitialDragPoint().getX());
             Element e = ctx.getCurrentElementType().placeNew(nowToX, nowToY);
-            //svgRoot.appendChild(e);
             Element elt = ctx.getDoc().getElementById("objects");
             elt.appendChild(e);
         }
