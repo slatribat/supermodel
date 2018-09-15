@@ -1,4 +1,4 @@
 skapa upp Element från xml
 spara elementen där de placerats ut.
-flytta element i alla riktningar via deras egna eventlisteners https://wiki.apache.org/xmlgraphics-batik/DragTutorial
-elementsInView - plocka ut rätt element instans
+ändra färg
+ändra längd på line

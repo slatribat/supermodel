@@ -1,11 +1,8 @@
 package se.ads;
 
-import org.apache.batik.dom.events.DOMMouseEvent;
-import org.apache.batik.dom.svg.SVGOMPoint;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.svg.SVGLocatable;
-import org.w3c.dom.svg.SVGMatrix;
 
 public class OnDownAction implements org.w3c.dom.events.EventListener {
 
@@ -22,19 +19,6 @@ public class OnDownAction implements org.w3c.dom.events.EventListener {
         ctx.setDrag(ApplicationContext.DRAG_DOWN);
 
 
-        DOMMouseEvent elEvt = (DOMMouseEvent) evt;
-        int nowToX = elEvt.getClientX();
-        int nowToY = elEvt.getClientY();
 
-        SVGOMPoint pt = new SVGOMPoint(nowToX, nowToY);
-        SVGMatrix mat = thisNode.getScreenCTM();  // elem -> screen
-        mat = mat.inverse();                  // screen -> elem
-        ctx.setInitialDragPoint((SVGOMPoint)pt.matrixTransform(mat));
-
-        Element svgRoot = ctx.getDoc().getDocumentElement();
-        if (ctx.getCurrentElementType() != null) {
-            Element e = ctx.getCurrentElementType().placeNew(nowToX, nowToY);
-            svgRoot.appendChild(e);
-        }
     }
 }

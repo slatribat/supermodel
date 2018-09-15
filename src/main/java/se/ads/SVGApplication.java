@@ -107,9 +107,9 @@ public class SVGApplication {
         });
 
         buttonNewClass.addActionListener(ae ->
-                ctx.setCurrentElementType(new DrawClassElement(doc)));
+                ctx.setCurrentElementType(new DrawRectElement(doc, ctx)));
         buttonNewLine.addActionListener(ae ->
-                ctx.setCurrentElementType(new DrawLineElement(doc)));
+                ctx.setCurrentElementType(new DrawLineElement(doc, ctx)));
 
         // Set the JSVGCanvas listeners.
         svgCanvas.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
@@ -142,30 +142,34 @@ public class SVGApplication {
             public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
                 label.setText("");
                 updateManager = svgCanvas.getUpdateManager();
+
+                // create the array of rectangles
+                String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+                Element g = doc.createElementNS(svgNS, "g");
+                g.setAttributeNS(null, "id", "objects");
+
                 addGlassPane();
 
                 Element elt = svgCanvas.getSVGDocument().getElementById("glasspane");
                 EventTarget target = (EventTarget) elt;
 
-                target.addEventListener("mousedown", new OnDownAction(ctx), false);
-                target.addEventListener("mousemove", new OnMoveAction(ctx), false);
+                /*target.addEventListener("mousedown", new OnDownAction(ctx), false);
+                 target.addEventListener("mousemove", new OnMoveAction(ctx), false);*/
                 target.addEventListener("mouseup", new OnUpAction(ctx), false);
-                target.addEventListener("mouseout", new OnUpAction(ctx), false);
-                //target.addEventListener("mouseover", new OnOverAction(), false);
-                //target.addEventListener("click", new OnClickAction(), false);
+                /*target.addEventListener("mouseout", new OnUpAction(ctx), false);
+                target.addEventListener("mouseover", new OnOverAction(), false);*/
+                target.addEventListener("click", new OnClickAction(ctx), false);
 
+                svgRoot.appendChild(g);
 
                 Element elt2 = svgCanvas.getSVGDocument().getElementById("rectangles");
-                EventTarget t2 = (EventTarget)elt2;
+                EventTarget t2 = (EventTarget) elt2;
 
                 Point2D p = getCanvasCoordinate(new Point2D.Float(x, y));
-         GraphicsNode gn = svgCanvas.getGraphicsNode().nodeHitAt(p);
-         BridgeContext bc =
-                 ((JSVGCanvas) svgCanvas).getUpdateManager().getBridgeContext();
-             //(Element) bc.getElement(gn);
+                GraphicsNode gn = svgCanvas.getGraphicsNode().nodeHitAt(p);
+                BridgeContext bc =
+                        ((JSVGCanvas) svgCanvas).getUpdateManager().getBridgeContext();
 
-
-               // t2.addEventListener("click", new ObjectClick(), false);
             }
         });
 
@@ -183,17 +187,17 @@ public class SVGApplication {
     }
 
     public void addGlassPane() {
-                 Document doc = svgCanvas.getSVGDocument();
-                 Element rectangle = doc.createElementNS(SVG_NS, "rect");
-                 rectangle.setAttributeNS(null, "x", "0");
-                 rectangle.setAttributeNS(null, "y", "0");
-                 rectangle.setAttributeNS(null, "width", "400");
-                 rectangle.setAttributeNS(null, "height", "400");
-                 rectangle.setAttributeNS(null, "style", "fill:none;pointer-events:fill");
-                 rectangle.setAttributeNS(null, "id", "glasspane");
-                 Element svgRoot = doc.getDocumentElement();
+        Document doc = svgCanvas.getSVGDocument();
+        Element rectangle = doc.createElementNS(SVG_NS, "rect");
+        rectangle.setAttributeNS(null, "x", "0");
+        rectangle.setAttributeNS(null, "y", "0");
+        rectangle.setAttributeNS(null, "width", "400");
+        rectangle.setAttributeNS(null, "height", "400");
+        rectangle.setAttributeNS(null, "style", "fill:none;pointer-events:fill");
+        rectangle.setAttributeNS(null, "id", "glasspane");
+        Element svgRoot = doc.getDocumentElement();
 
-                 svgRoot.appendChild(rectangle);
+        svgRoot.insertBefore(rectangle, doc.getElementById("objects"));
 
-             }
+    }
 }

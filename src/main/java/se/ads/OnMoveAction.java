@@ -21,6 +21,7 @@ public class OnMoveAction implements EventListener {
             DOMMouseEvent elEvt = (DOMMouseEvent) evt;
             int nowToX = elEvt.getClientX();
             int nowToY = elEvt.getClientY();
+
             SVGOMPoint pt = new SVGOMPoint(nowToX, nowToY);
             SVGMatrix mat = ((SVGLocatable)evt.getTarget()).getScreenCTM();
 
@@ -28,14 +29,19 @@ public class OnMoveAction implements EventListener {
             SVGOMPoint dragpt = (SVGOMPoint)pt.matrixTransform(mat);
 
             Element element = (Element) evt.getTarget();
-            float newX = dragpt.getX();
-            if (dragpt.getX() < ctx.getInitialDragPoint().getX()){
-                newX = newX - 10;
-                System.out.println("left");
-            }
-            System.out.println("initialX:" + ctx.getInitialDragPoint().getX());
-            System.out.println("x:" + element.getAttribute("x") + " y:" + element.getAttribute("y") + " -> " + dragpt.getX() + " y:"+dragpt.getY());
-            element.setAttribute("x", ""+ newX);
+
+            element.setAttribute("x", ""+ getMiddleX(element, dragpt));
+            element.setAttribute("y", ""+ getMiddleY(element, dragpt));
         }
+    }
+    private float getMiddleX(Element element, SVGOMPoint dragpt){
+        if (element.getLocalName().matches("rect")) {
+            return dragpt.getX() - Float.valueOf(element.getAttribute("width")) / 2;
+        }
+        return dragpt.getX() - Float.valueOf(element.getAttribute("width")) / 2;
+
+    }
+    private float getMiddleY(Element element, SVGOMPoint dragpt){
+        return dragpt.getY() - Float.valueOf(element.getAttribute("height")) / 2;
     }
 }

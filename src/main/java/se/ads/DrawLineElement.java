@@ -2,6 +2,7 @@ package se.ads;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.events.EventTarget;
 
 /**
  * Created by ansi on 2017-05-15.
@@ -9,11 +10,11 @@ import org.w3c.dom.Element;
 public class DrawLineElement implements DrawElement{
     Document doc;
     Element element;
+    private ApplicationContext ctx;
 
-    public DrawLineElement(Document doc){
-        super();
+    public DrawLineElement(Document doc, ApplicationContext applicationContext){
         this.doc = doc;
-
+        this.ctx = applicationContext;
     }
     public Element create(){
         this.element = doc.createElementNS(SVGApplication.SVG_NS, "line");
@@ -22,6 +23,15 @@ public class DrawLineElement implements DrawElement{
         element.setAttribute("x2", "0");
         element.setAttribute("y2", "0");
         element.setAttribute("style", "stroke:rgb(255,0,0);stroke-width:2");
+
+        EventTarget target = (EventTarget) element;
+        target.addEventListener("mousedown", new OnDownAction(ctx), false);
+        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
+        target.addEventListener("mouseup", new OnUpAction(ctx), false);
+        target.addEventListener("mouseout", evt -> {
+            System.out.println("mouseout listener");
+        }, false);
+
         return element;
     }
 

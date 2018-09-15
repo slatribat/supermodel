@@ -7,14 +7,14 @@ import org.w3c.dom.events.EventTarget;
 /**
  * Created by ansi on 2017-05-15.
  */
-public class DrawClassElement implements DrawElement{
-    Document doc;
-    Element element;
+public class DrawRectElement implements DrawElement{
+    private Document doc;
+    private Element element;
+    private ApplicationContext ctx;
 
-    public DrawClassElement(Document doc){
-        super();
+    public DrawRectElement(Document doc, ApplicationContext applicationContext){
         this.doc = doc;
-
+        this.ctx = applicationContext;
     }
     public Element create(){
         this.element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
@@ -25,15 +25,9 @@ public class DrawClassElement implements DrawElement{
         element.setAttributeNS(null, "style", "fill:red");
 
         EventTarget target = (EventTarget) element;
-        target.addEventListener("mousedown", evt -> {
-            System.out.println("mousedown listener");
-        }, false);
-        target.addEventListener("mousemove", evt -> {
-            System.out.println("mousemove listener");
-        }, false);
-        target.addEventListener("mouseup", evt -> {
-            System.out.println("mouseup listener");
-        }, false);
+        target.addEventListener("mousedown", new OnDownAction(ctx), false);
+        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
+        target.addEventListener("mouseup", new OnUpAction(ctx), false);
         target.addEventListener("mouseout", evt -> {
             System.out.println("mouseout listener");
         }, false);

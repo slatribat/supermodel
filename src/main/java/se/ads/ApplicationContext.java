@@ -12,6 +12,7 @@ public class ApplicationContext {
     private DrawElement currentElementType;
     public static final int DRAG_UP = 0;
     public static final int DRAG_DOWN = 1;
+    private int lastX;
 
     public int getDrag() {
         return drag;
@@ -51,5 +52,13 @@ public class ApplicationContext {
 
     public void setCurrentElementType(DrawElement currentElementType) {
         this.currentElementType = currentElementType;
+    }
+
+    public int getLastX() {
+        return lastX;
+    }
+
+    public void setLastX(int lastX) {
+        this.lastX = lastX;
     }
 }
