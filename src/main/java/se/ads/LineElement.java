@@ -1,22 +1,21 @@
 package se.ads;
 
 import org.apache.batik.dom.svg.SVGOMPoint;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
+import se.ads.actions.OnDownAction;
+import se.ads.actions.OnMoveAction;
+import se.ads.actions.OnUpAction;
 
 /**
  * Created by ansi on 2017-05-15.
  */
-public class DrawLineElement extends BaseDrawElement implements DrawElement{
-    private Document doc;
-    private ApplicationContext ctx;
+public class LineElement extends BaseDrawElement implements DrawElement{
     private Integer firstPlacementX;
     private Integer firstPlacementY;
 
-    DrawLineElement(Document doc, ApplicationContext applicationContext){
-        this.doc = doc;
-        this.ctx = applicationContext;
+    public LineElement(ApplicationContext ctx) {
+        super(ctx.getDoc(), ctx);
     }
     public Element create(){
         Element element = doc.createElementNS(SVGApplication.SVG_NS, "line");

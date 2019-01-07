@@ -1,8 +1,9 @@
-package se.ads;
+package se.ads.actions;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.svg.SVGLocatable;
+import se.ads.ApplicationContext;
 
 public class OnDownAction implements org.w3c.dom.events.EventListener {
 

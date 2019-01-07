@@ -1,4 +1,4 @@
-package se.ads;
+package se.ads.actions;
 
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.svg.SVGOMPoint;
@@ -7,6 +7,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGMatrix;
+import se.ads.ApplicationContext;
 
 public class OnMoveAction implements EventListener {
     ApplicationContext ctx;

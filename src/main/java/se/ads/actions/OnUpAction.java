@@ -1,7 +1,8 @@
-package se.ads;
+package se.ads.actions;
 
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
+import se.ads.ApplicationContext;
 
 public class OnUpAction implements EventListener {
     private ApplicationContext ctx;

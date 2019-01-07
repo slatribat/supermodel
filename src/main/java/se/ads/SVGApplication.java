@@ -15,6 +15,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
+import se.ads.actions.OnClickAction;
+import se.ads.actions.OnUpAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,9 +103,9 @@ public class SVGApplication {
         });
 
         buttonNewClass.addActionListener(ae ->
-                ctx.setCurrentElementType(new DrawRectElement(doc, ctx)));
+                ctx.setCurrentElementType(new RectElement( ctx)));
         buttonNewLine.addActionListener(ae ->
-                ctx.setCurrentElementType(new DrawLineElement(doc, ctx)));
+                ctx.setCurrentElementType(new LineElement( ctx)));
 
         // Set the JSVGCanvas listeners.
         svgCanvas.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
@@ -156,8 +158,7 @@ public class SVGApplication {
                 /*target.addEventListener("mousedown", new OnDownAction(ctx), false);
                  target.addEventListener("mousemove", new OnMoveAction(ctx), false);*/
                 target.addEventListener("mouseup", new OnUpAction(ctx), false);
-                /*target.addEventListener("mouseout", new OnUpAction(ctx), false);
-                target.addEventListener("mouseover", new OnOverAction(), false);*/
+                /*target.addEventListener("mouseout", new OnUpAction(ctx), false);*/
                 target.addEventListener("click", new OnClickAction(ctx), false);
 
                 svgRoot.appendChild(g);

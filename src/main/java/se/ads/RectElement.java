@@ -1,25 +1,26 @@
 package se.ads;
 
 import org.apache.batik.dom.svg.SVGOMPoint;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
+import se.ads.actions.OnDownAction;
+import se.ads.actions.OnMoveAction;
+import se.ads.actions.OnOverAction;
+import se.ads.actions.OnUpAction;
 
 /**
  * Created by ansi on 2017-05-15.
  */
-public class DrawRectElement extends BaseDrawElement implements DrawElement{
-    private Document doc;
-    private ApplicationContext ctx;
+public class RectElement extends BaseDrawElement implements DrawElement{
     private String styleType = "stroke";
     private String opacity = "0.1";
     private String color = "red";
     private String fillColor = "black";
 
-    DrawRectElement(Document doc, ApplicationContext applicationContext){
-        this.doc = doc;
-        this.ctx = applicationContext;
+    public RectElement(ApplicationContext ctx) {
+        super(ctx.getDoc(), ctx);
     }
+
     public Element create(){
         Element element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
         element.setAttribute("x", "10");
@@ -34,6 +35,7 @@ public class DrawRectElement extends BaseDrawElement implements DrawElement{
         target.addEventListener("mousedown", new OnDownAction(ctx), false);
         target.addEventListener("mousemove", new OnMoveAction(ctx), false);
         target.addEventListener("mouseup", new OnUpAction(ctx), false);
+        target.addEventListener("mouseover", new OnOverAction(ctx), false);
         target.addEventListener("mouseout", evt -> {
             //
         }, false);
