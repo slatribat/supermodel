@@ -18,7 +18,7 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
     @Override
     public void handleEvent(Event evt) {
         SVGLocatable thisNode = (SVGLocatable) evt.getTarget();
-        ctx.setSelectedItem((Element) evt.getTarget());
+        //ctx.setSelectedItem((Element) evt.getTarget());
 
         DOMMouseEvent elEvt = (DOMMouseEvent) evt;
         int nowToX = elEvt.getClientX();
@@ -30,10 +30,11 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
         ctx.setInitialDragPoint((SVGOMPoint)pt.matrixTransform(mat));
 
         if (ctx.getCurrentElementType() != null) {
-            System.out.println("Appendchild at: X:" + ctx.getInitialDragPoint().getX());
             Element e = ctx.getCurrentElementType().placeNew(nowToX, nowToY);
-            Element elt = ctx.getDoc().getElementById("objects");
-            elt.appendChild(e);
+            if (e != null) {
+                Element elt = ctx.getDoc().getElementById("objects");
+                elt.appendChild(e);
+            }
         }
     }
 }

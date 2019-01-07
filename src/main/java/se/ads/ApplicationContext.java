@@ -10,6 +10,8 @@ public class ApplicationContext {
     private SVGOMPoint initialDragPoint;
     private Document doc;
     private DrawElement currentElementType;
+    private DrawRectElement drawRectElement;
+    private DrawLineElement drawLineElement;
     public static final int DRAG_UP = 0;
     public static final int DRAG_DOWN = 1;
     private int lastX;
@@ -28,6 +30,12 @@ public class ApplicationContext {
 
     public void setSelectedItem(Element selectedItem) {
         this.selectedItem = selectedItem;
+        if (selectedItem.getLocalName().matches("rect")) {
+            setCurrentElementType(drawRectElement);
+        } else if (selectedItem.getLocalName().matches("line")) {
+            setCurrentElementType(drawLineElement);
+        }
+        System.out.println("currentType:"+currentElementType.toString());
     }
 
     public SVGOMPoint getInitialDragPoint() {
@@ -51,6 +59,11 @@ public class ApplicationContext {
     }
 
     public void setCurrentElementType(DrawElement currentElementType) {
+        if (currentElementType instanceof DrawRectElement){
+            drawRectElement = new DrawRectElement(doc, this);
+        } else if (currentElementType instanceof DrawLineElement){
+            drawLineElement = new DrawLineElement(doc, this);
+        }
         this.currentElementType = currentElementType;
     }
 

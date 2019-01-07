@@ -30,18 +30,9 @@ public class OnMoveAction implements EventListener {
 
             Element element = (Element) evt.getTarget();
 
-            element.setAttribute("x", ""+ getMiddleX(element, dragpt));
-            element.setAttribute("y", ""+ getMiddleY(element, dragpt));
-        }
-    }
-    private float getMiddleX(Element element, SVGOMPoint dragpt){
-        if (element.getLocalName().matches("rect")) {
-            return dragpt.getX() - Float.valueOf(element.getAttribute("width")) / 2;
-        }
-        return dragpt.getX() - Float.valueOf(element.getAttribute("width")) / 2;
+            ctx.getCurrentElementType().move(dragpt, element);
 
+        }
     }
-    private float getMiddleY(Element element, SVGOMPoint dragpt){
-        return dragpt.getY() - Float.valueOf(element.getAttribute("height")) / 2;
-    }
+
 }

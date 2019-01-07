@@ -19,6 +19,5 @@ public class OnDownAction implements org.w3c.dom.events.EventListener {
         ctx.setDrag(ApplicationContext.DRAG_DOWN);
 
 
-
     }
 }

@@ -1,5 +1,6 @@
 package se.ads;
 
+import org.apache.batik.dom.svg.SVGOMPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.EventTarget;
@@ -7,21 +8,20 @@ import org.w3c.dom.events.EventTarget;
 /**
  * Created by ansi on 2017-05-15.
  */
-public class DrawRectElement implements DrawElement{
+public class DrawRectElement extends BaseDrawElement implements DrawElement{
     private Document doc;
-    private Element element;
     private ApplicationContext ctx;
     private String styleType = "stroke";
     private String opacity = "0.1";
     private String color = "red";
     private String fillColor = "black";
 
-    public DrawRectElement(Document doc, ApplicationContext applicationContext){
+    DrawRectElement(Document doc, ApplicationContext applicationContext){
         this.doc = doc;
         this.ctx = applicationContext;
     }
     public Element create(){
-        this.element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
+        Element element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
         element.setAttribute("x", "10");
         element.setAttribute("y", "20");
         element.setAttribute("width", "100");
@@ -35,21 +35,28 @@ public class DrawRectElement implements DrawElement{
         target.addEventListener("mousemove", new OnMoveAction(ctx), false);
         target.addEventListener("mouseup", new OnUpAction(ctx), false);
         target.addEventListener("mouseout", evt -> {
-            System.out.println("mouseout listener");
+            //
         }, false);
 
         return element;
     }
 
-    public Element move(int x, int y, Element element) {
-        this.element.setAttribute("x", String.valueOf(x));
-        this.element.setAttribute("y", String.valueOf(y));
-        return this.element;
+    public Element move(SVGOMPoint dragpt, Element element) {
+        element.setAttribute("x", ""+ getMiddleX(element, dragpt));
+        element.setAttribute("y", ""+ getMiddleY(element, dragpt));
+        return element;
+    }
+
+    private float getMiddleX(Element element, SVGOMPoint dragpt){
+        return dragpt.getX() - Float.valueOf(element.getAttribute("width")) / 2;
+    }
+    private float getMiddleY(Element element, SVGOMPoint dragpt){
+        return dragpt.getY() - Float.valueOf(element.getAttribute("height")) / 2;
     }
 
     @Override
     public Element placeNew(int x, int y) {
-        create();
+        Element element = create();
         element.setAttribute("x", String.valueOf(x));
         element.setAttribute("y", String.valueOf(y));
         return element;
