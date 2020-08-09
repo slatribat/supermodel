@@ -77,8 +77,12 @@ public class SVGApplication {
         p.add(buttonNewLine);
         p.add(label);
 
+        JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        statusBarPanel.add(new JTextField(ctx.getSelectedItemName()));
+
         panel.add("North", p);
         panel.add("Center", svgCanvas);
+        panel.add("South", statusBarPanel);
 
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         doc = impl.createDocument(SVG_NS, "svg", null);
@@ -161,7 +165,9 @@ public class SVGApplication {
                 /*target.addEventListener("mouseout", new OnUpAction(ctx), false);*/
                 target.addEventListener("click", new OnClickAction(ctx), false);
 
-                svgRoot.appendChild(g);
+                if (ctx.getSelectedItem() == null) {
+                    svgRoot.appendChild(g);
+                }
 
                 Point2D p = getCanvasCoordinate(new Point2D.Float(x, y));
 

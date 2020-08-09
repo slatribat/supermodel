@@ -1,4 +1,5 @@
 skapa upp Element från xml
+välj element och indikera
 spara elementen där de placerats ut.
 ändra färg
 ändra längd på line

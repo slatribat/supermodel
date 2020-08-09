@@ -19,7 +19,7 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
     @Override
     public void handleEvent(Event evt) {
         SVGLocatable thisNode = (SVGLocatable) evt.getTarget();
-        //ctx.setSelectedItem((Element) evt.getTarget());
+        ctx.setSelectedItem(null);
 
         DOMMouseEvent elEvt = (DOMMouseEvent) evt;
         int nowToX = elEvt.getClientX();

@@ -1,10 +1,14 @@
 package se.ads;
 
 import org.apache.batik.dom.svg.SVGOMPoint;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ApplicationContext {
+    Logger logger = LogManager.getLogger(ApplicationContext.class);
+
     private int drag;
     private Element selectedItem;
     private SVGOMPoint initialDragPoint;
@@ -28,14 +32,20 @@ public class ApplicationContext {
         return selectedItem;
     }
 
+    public String getSelectedItemName(){
+        return selectedItem != null ? selectedItem.getTagName() : "";
+    }
+
     public void setSelectedItem(Element selectedItem) {
         this.selectedItem = selectedItem;
-        if (selectedItem.getLocalName().matches("rect")) {
-            setCurrentElementType(rectElement);
-        } else if (selectedItem.getLocalName().matches("line")) {
-            setCurrentElementType(lineElement);
+        if (selectedItem != null) {
+            if (selectedItem.getLocalName().matches("rect")) {
+                setCurrentElementType(rectElement);
+            } else if (selectedItem.getLocalName().matches("line")) {
+                setCurrentElementType(lineElement);
+            }
         }
-        System.out.println("currentType:"+currentElementType.toString());
+        logger.info("currentType: {}", getSelectedItemName());
     }
 
     public SVGOMPoint getInitialDragPoint() {
