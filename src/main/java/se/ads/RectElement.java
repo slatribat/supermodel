@@ -23,6 +23,7 @@ public class RectElement extends BaseDrawElement implements DrawElement{
 
     public Element create(){
         Element element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
+        element.setAttribute("id", "rect");
         element.setAttribute("x", "10");
         element.setAttribute("y", "20");
         element.setAttribute("width", "100");
@@ -36,9 +37,6 @@ public class RectElement extends BaseDrawElement implements DrawElement{
         target.addEventListener("mousemove", new OnMoveAction(ctx), false);
         target.addEventListener("mouseup", new OnUpAction(ctx), false);
         target.addEventListener("mouseover", new OnOverAction(ctx), false);
-        target.addEventListener("mouseout", evt -> {
-            //
-        }, false);
 
         return element;
     }

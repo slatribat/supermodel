@@ -24,6 +24,8 @@ public class ApplicationContext {
     public static final int DRAG_DOWN = 1;
     private int lastX;
     private Element currentlyHighlighted = null;
+    private Element currentBalloon = null;
+    private Boolean usingBalloon = false;
 
     public Map<String, JLabel> getUiLabels() {
         return uiLabels;
@@ -87,6 +89,14 @@ public class ApplicationContext {
 
     public void setCurrentlyHighlighted(Element currentlyHighlighted) {
         this.currentlyHighlighted = currentlyHighlighted;
+    }
+
+    public Element getCurrentBalloon() {
+        return currentBalloon;
+    }
+
+    public void setCurrentBalloon(Element currentBalloon) {
+        this.currentBalloon = currentBalloon;
     }
 
     public DrawElement getCurrentElementType() {

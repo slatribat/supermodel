@@ -1,9 +1,8 @@
 skapa upp Element från xml
-välj element och indikera
 spara elementen där de placerats ut.
 ändra färg
 ändra längd på line
-lägg menyknapp på objekt
+lägg menyknapp på objekt - öppna balloon
 menyknapp
  - sätt text
  - sätt färg

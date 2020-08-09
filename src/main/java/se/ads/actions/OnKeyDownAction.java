@@ -10,7 +10,7 @@ import org.w3c.dom.svg.SVGLocatable;
 import se.ads.ApplicationContext;
 
 public class OnKeyDownAction implements EventListener {
-    Logger logger = LogManager.getLogger(ApplicationContext.class);
+    Logger logger = LogManager.getLogger(OnKeyDownAction.class);
 
     private ApplicationContext ctx;
 
