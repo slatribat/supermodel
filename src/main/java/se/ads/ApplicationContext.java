@@ -23,6 +23,7 @@ public class ApplicationContext {
     public static final int DRAG_UP = 0;
     public static final int DRAG_DOWN = 1;
     private int lastX;
+    private Element currentlyHighlighted = null;
 
     public Map<String, JLabel> getUiLabels() {
         return uiLabels;
@@ -56,6 +57,9 @@ public class ApplicationContext {
             } else if (selectedItem.getLocalName().matches("line")) {
                 setCurrentElementType(lineElement);
             }
+
+            getCurrentElementType().highlight();
+            setCurrentlyHighlighted(this.selectedItem);
         }
         uiLabels.get("selectedItemName").setText(getSelectedItemName());
         logger.info("currentType: {}", getSelectedItemName());
@@ -75,6 +79,14 @@ public class ApplicationContext {
 
     public void setDoc(Document doc) {
         this.doc = doc;
+    }
+
+    public Element getCurrentlyHighlighted() {
+        return currentlyHighlighted;
+    }
+
+    public void setCurrentlyHighlighted(Element currentlyHighlighted) {
+        this.currentlyHighlighted = currentlyHighlighted;
     }
 
     public DrawElement getCurrentElementType() {
