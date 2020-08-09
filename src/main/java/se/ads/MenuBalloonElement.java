@@ -46,24 +46,26 @@ public class MenuBalloonElement extends BaseDrawElement implements DrawElement{
 
     @Override
     public Element create() {
-        Element element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
-        element.setAttribute("x", "10");
-        element.setAttribute("y", "20");
-        element.setAttribute("width", "12");
-        element.setAttribute("height", "12");
-        element.setAttribute("style", styleType+":"+color);
-        element.setAttribute("fill-opacity", opacity);
-        element.setAttribute("fill", fillColor);
+        Element element = null;
+        if (doc != null) {
+            element = doc.createElementNS(SVGApplication.SVG_NS, "rect");
+            element.setAttribute("x", "10");
+            element.setAttribute("y", "20");
+            element.setAttribute("width", "12");
+            element.setAttribute("height", "12");
+            element.setAttribute("style", styleType + ":" + color);
+            element.setAttribute("fill-opacity", opacity);
+            element.setAttribute("fill", fillColor);
 
-        EventTarget target = (EventTarget) element;
-        target.addEventListener("mousedown", new OnDownAction(ctx), false);
-        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
-        target.addEventListener("mouseup", new OnUpAction(ctx), false);
-        target.addEventListener("mouseover", new OnOverAction(ctx), false);
-        target.addEventListener("mouseout", evt -> {
-            //
-        }, false);
-
+            EventTarget target = (EventTarget) element;
+            target.addEventListener("mousedown", new OnDownAction(ctx), false);
+            target.addEventListener("mousemove", new OnMoveAction(ctx), false);
+            target.addEventListener("mouseup", new OnUpAction(ctx), false);
+            target.addEventListener("mouseover", new OnOverAction(ctx), false);
+            target.addEventListener("mouseout", evt -> {
+                //
+            }, false);
+        }
         return element;
     }
 
@@ -75,8 +77,10 @@ public class MenuBalloonElement extends BaseDrawElement implements DrawElement{
     @Override
     public Element placeNew(int x, int y) {
         Element element = create();
-        element.setAttribute("x", String.valueOf(x));
-        element.setAttribute("y", String.valueOf(y));
+        if (element != null) {
+            element.setAttribute("x", String.valueOf(x));
+            element.setAttribute("y", String.valueOf(y));
+        }
         return element;
     }
 }

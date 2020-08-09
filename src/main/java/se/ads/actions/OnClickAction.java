@@ -35,6 +35,7 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
             if (e != null) {
                 Element elt = ctx.getDoc().getElementById("objects");
                 elt.appendChild(e);
+                ctx.setSelectedItem(e);
             }
         }
     }

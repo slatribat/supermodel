@@ -26,6 +26,8 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ansi on 2017-05-14.
@@ -78,7 +80,10 @@ public class SVGApplication {
         p.add(label);
 
         JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        statusBarPanel.add(new JTextField(ctx.getSelectedItemName()));
+        JLabel selectedItemName = new JLabel(ctx.getSelectedItemName());
+        statusBarPanel.add(selectedItemName);
+        Map<String,JLabel> uiTextsMap = new HashMap<>();
+        uiTextsMap.put("selectedItemName", selectedItemName);
 
         panel.add("North", p);
         panel.add("Center", svgCanvas);
@@ -89,6 +94,7 @@ public class SVGApplication {
         svgCanvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
         svgCanvas.setDocument(doc);
         ctx.setDoc(doc);
+        ctx.setUiLabels(uiTextsMap);
 
         // Set the button action.
         buttonLoad.addActionListener(new ActionListener() {

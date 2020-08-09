@@ -6,11 +6,15 @@ import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.*;
+import java.util.Map;
+
 public class ApplicationContext {
     Logger logger = LogManager.getLogger(ApplicationContext.class);
 
     private int drag;
     private Element selectedItem;
+    private Map<String,JLabel> uiLabels;
     private SVGOMPoint initialDragPoint;
     private Document doc;
     private DrawElement currentElementType;
@@ -19,6 +23,14 @@ public class ApplicationContext {
     public static final int DRAG_UP = 0;
     public static final int DRAG_DOWN = 1;
     private int lastX;
+
+    public Map<String, JLabel> getUiLabels() {
+        return uiLabels;
+    }
+
+    public void setUiLabels(Map<String, JLabel> uiLabels) {
+        this.uiLabels = uiLabels;
+    }
 
     public int getDrag() {
         return drag;
@@ -33,7 +45,7 @@ public class ApplicationContext {
     }
 
     public String getSelectedItemName(){
-        return selectedItem != null ? selectedItem.getTagName() : "";
+        return selectedItem != null ? selectedItem.getNodeName() : "";
     }
 
     public void setSelectedItem(Element selectedItem) {
@@ -45,6 +57,7 @@ public class ApplicationContext {
                 setCurrentElementType(lineElement);
             }
         }
+        uiLabels.get("selectedItemName").setText(getSelectedItemName());
         logger.info("currentType: {}", getSelectedItemName());
     }
 
