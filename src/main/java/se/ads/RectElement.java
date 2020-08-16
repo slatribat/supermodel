@@ -8,14 +8,8 @@ import se.ads.actions.OnMoveAction;
 import se.ads.actions.OnOverAction;
 import se.ads.actions.OnUpAction;
 
-/**
- * Created by ansi on 2017-05-15.
- */
 public class RectElement extends BaseDrawElement implements DrawElement{
-    private String styleType = "stroke";
-    private String opacity = "0.1";
-    private String color = "red";
-    private String fillColor = "black";
+
 
     public RectElement(ApplicationContext ctx) {
         super(ctx.getDoc(), ctx);
@@ -28,7 +22,7 @@ public class RectElement extends BaseDrawElement implements DrawElement{
         element.setAttribute("y", "20");
         element.setAttribute("width", "100");
         element.setAttribute("height", "50");
-        element.setAttribute("style", styleType+":"+color);
+        element.setAttribute("style", styleType+":"+ rgbcolor);
         element.setAttribute("fill-opacity", opacity);
         element.setAttribute("fill", fillColor);
 
@@ -79,11 +73,11 @@ public class RectElement extends BaseDrawElement implements DrawElement{
     }
 
     public String getColor() {
-        return color;
+        return rgbcolor;
     }
 
     public void setColor(String color) {
-        this.color = color;
+        this.rgbcolor = color;
     }
 
     public String getFillColor() {

@@ -10,6 +10,8 @@ import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
 import org.apache.batik.util.SVGConstants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,7 +22,10 @@ import se.ads.actions.OnUpAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -33,6 +38,7 @@ import java.util.Map;
  * Created by ansi on 2017-05-14.
  */
 public class SVGApplication {
+    Logger logger = LogManager.getLogger(SVGApplication.class);
     static final String SVG_NS = SVGDOMImplementation.SVG_NAMESPACE_URI;
 
     protected JFrame frame;
@@ -69,14 +75,22 @@ public class SVGApplication {
     public JComponent createComponents() {
         // Create a panel and add the button, status label and the SVG canvas.
         final JPanel panel = new JPanel(new BorderLayout());
-        JButton buttonLoad = new JButton("Load...");
-        JButton buttonNewClass = new JButton("class");
-        JButton buttonNewLine = new JButton("line");
+
+        JButton buttonNewClass = getButtonNewClass();
+        JButton buttonNewLine = getButtonNewLine();
+        JButton buttonLoad = getButtonLoad(panel);
+        ColorChooserButton colorChooser = new ColorChooserButton(Color.WHITE);
+        colorChooser.addColorChangedListener(newColor -> {
+            logger.info("color chosen{}",newColor);
+            BaseDrawElement elementType = new BaseDrawElement(doc, ctx);
+            elementType.changeColor( newColor);
+        });
 
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
         p.add(buttonLoad);
         p.add(buttonNewClass);
         p.add(buttonNewLine);
+        p.add(colorChooser);
         p.add(label);
 
         JPanel statusBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -84,38 +98,61 @@ public class SVGApplication {
         statusBarPanel.add(selectedItemName);
         Map<String,JLabel> uiTextsMap = new HashMap<>();
         uiTextsMap.put("selectedItemName", selectedItemName);
+        ctx.setUiLabels(uiTextsMap);
 
         panel.add("North", p);
         panel.add("Center", svgCanvas);
         panel.add("South", statusBarPanel);
 
+        svgRendering();
+
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                calculateSize((SVGDocument)doc);
+            }
+        });
+
+        return panel;
+    }
+
+    private JButton getButtonNewLine() {
+        JButton buttonNewLine = new JButton("line");
+        buttonNewLine.addActionListener(ae ->
+                ctx.setCurrentElementType(new LineElement( ctx)));
+        return buttonNewLine;
+    }
+
+    private JButton getButtonNewClass() {
+        JButton buttonNewClass = new JButton("class");
+        buttonNewClass.addActionListener(ae ->
+                ctx.setCurrentElementType(new RectElement( ctx)));
+        return buttonNewClass;
+    }
+
+    private JButton getButtonLoad(JPanel panel) {
+        JButton buttonLoad = new JButton("Load...");
+        buttonLoad.addActionListener(ae -> {
+            JFileChooser fc = new JFileChooser(".");
+            int choice = fc.showOpenDialog(panel);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File f = fc.getSelectedFile();
+                try {
+                    svgCanvas.setURI(f.toURL().toString());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        return buttonLoad;
+    }
+
+    private void svgRendering() {
         DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
         doc = impl.createDocument(SVG_NS, "svg", null);
         svgCanvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
         svgCanvas.setDocument(doc);
         ctx.setDoc(doc);
-        ctx.setUiLabels(uiTextsMap);
-
-        // Set the button action.
-        buttonLoad.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                JFileChooser fc = new JFileChooser(".");
-                int choice = fc.showOpenDialog(panel);
-                if (choice == JFileChooser.APPROVE_OPTION) {
-                    File f = fc.getSelectedFile();
-                    try {
-                        svgCanvas.setURI(f.toURL().toString());
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        buttonNewClass.addActionListener(ae ->
-                ctx.setCurrentElementType(new RectElement( ctx)));
-        buttonNewLine.addActionListener(ae ->
-                ctx.setCurrentElementType(new LineElement( ctx)));
+        Element svgRoot = doc.getDocumentElement();
 
         // Set the JSVGCanvas listeners.
         svgCanvas.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
@@ -125,13 +162,6 @@ public class SVGApplication {
 
             public void documentLoadingCompleted(SVGDocumentLoaderEvent e) {
                 label.setText("Document Loaded.");
-            }
-        });
-        Element svgRoot = doc.getDocumentElement();
-
-        frame.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
-                calculateSize((SVGDocument)doc);
             }
         });
 
@@ -179,8 +209,6 @@ public class SVGApplication {
 
             }
         });
-
-        return panel;
     }
 
     private void calculateSize(SVGDocument doc) {
@@ -207,8 +235,8 @@ public class SVGApplication {
         Element rectangle = doc.createElementNS(SVG_NS, "rect");
         rectangle.setAttributeNS(null, "x", "0");
         rectangle.setAttributeNS(null, "y", "0");
-        rectangle.setAttributeNS(null, "width", "400");
-        rectangle.setAttributeNS(null, "height", "400");
+        rectangle.setAttributeNS(null, "width", "600");
+        rectangle.setAttributeNS(null, "height", "600");
         rectangle.setAttributeNS(null, "style", "fill:none;pointer-events:fill");
         rectangle.setAttributeNS(null, "id", "glasspane");
         Element svgRoot = doc.getDocumentElement();
