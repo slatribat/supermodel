@@ -111,7 +111,20 @@ public class SVGApplication {
         panel.add("Center", svgCanvas);
         panel.add("South", statusBarPanel);
 
-        svgRendering();
+        //Create document
+        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
+        doc = impl.createDocument(SVG_NS, "svg", null);
+        // create the array of rectangles
+        String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+        Element g = doc.createElementNS(svgNS, "g");
+        g.setAttributeNS(null, "id", "objects");
+        addGlassPane(doc);
+        Element svgRoot = doc.getDocumentElement();
+        if (ctx.getSelectedItem() == null) {
+            svgRoot.appendChild(g);
+        }
+
+        svgRendering(doc);
 
         frame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -145,6 +158,8 @@ public class SVGApplication {
                 File f = fc.getSelectedFile();
                 try {
                     svgCanvas.setURI(f.toURL().toString());
+                    Document loadedDoc = svgCanvas.getSVGDocument();
+                    svgRendering(loadedDoc);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -208,13 +223,10 @@ public class SVGApplication {
         return null;
     }
 
-    private void svgRendering() {
-        DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-        doc = impl.createDocument(SVG_NS, "svg", null);
+    private void svgRendering(Document doc) {
         svgCanvas.setDocumentState(JSVGCanvas.ALWAYS_DYNAMIC);
         svgCanvas.setDocument(doc);
         ctx.setDoc(doc);
-        Element svgRoot = doc.getDocumentElement();
 
         // Set the JSVGCanvas listeners.
         svgCanvas.addSVGDocumentLoaderListener(new SVGDocumentLoaderAdapter() {
@@ -246,31 +258,22 @@ public class SVGApplication {
             public void gvtRenderingCompleted(GVTTreeRendererEvent e) {
                 label.setText("");
                 updateManager = svgCanvas.getUpdateManager();
+                addGlassPaneListeners();
 
-                // create the array of rectangles
-                String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
-                Element g = doc.createElementNS(svgNS, "g");
-                g.setAttributeNS(null, "id", "objects");
-
-                addGlassPane();
-
-                Element elt = svgCanvas.getSVGDocument().getElementById("glasspane");
-                EventTarget target = (EventTarget) elt;
-
-                /*target.addEventListener("mousedown", new OnDownAction(ctx), false);
-                 target.addEventListener("mousemove", new OnMoveAction(ctx), false);*/
-                target.addEventListener("mouseup", new OnUpAction(ctx), false);
-                /*target.addEventListener("mouseout", new OnUpAction(ctx), false);*/
-                target.addEventListener("click", new OnClickAction(ctx), false);
-
-                if (ctx.getSelectedItem() == null) {
-                    svgRoot.appendChild(g);
-                }
-
-                Point2D p = getCanvasCoordinate(new Point2D.Float(x, y));
 
             }
         });
+    }
+
+    private void addGlassPaneListeners() {
+        Element elt = svgCanvas.getSVGDocument().getElementById("glasspane");
+        EventTarget target = (EventTarget) elt;
+
+                /*target.addEventListener("mousedown", new OnDownAction(ctx), false);
+                 target.addEventListener("mousemove", new OnMoveAction(ctx), false);*/
+        target.addEventListener("mouseup", new OnUpAction(ctx), false);
+        /*target.addEventListener("mouseout", new OnUpAction(ctx), false);*/
+        target.addEventListener("click", new OnClickAction(ctx), false);
     }
 
     private void calculateSize(SVGDocument doc) {
@@ -292,8 +295,7 @@ public class SVGApplication {
         }
     }
 
-    public void addGlassPane() {
-        Document doc = svgCanvas.getSVGDocument();
+    public void addGlassPane(Document doc) {
         Element rectangle = doc.createElementNS(SVG_NS, "rect");
         rectangle.setAttributeNS(null, "x", "0");
         rectangle.setAttributeNS(null, "y", "0");
