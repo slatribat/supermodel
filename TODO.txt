@@ -1,6 +1,4 @@
-skapa upp Element från xml
-spara elementen där de placerats ut.
-ändra färg
+editera element uppskapade från fil
 ändra längd på line
 lägg menyknapp på objekt - öppna balloon
 menyknapp

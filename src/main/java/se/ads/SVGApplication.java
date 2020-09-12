@@ -9,6 +9,10 @@ import org.apache.batik.swing.svg.GVTTreeBuilderAdapter;
 import org.apache.batik.swing.svg.GVTTreeBuilderEvent;
 import org.apache.batik.swing.svg.SVGDocumentLoaderAdapter;
 import org.apache.batik.swing.svg.SVGDocumentLoaderEvent;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.SVGConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,8 +33,8 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +44,7 @@ import java.util.Map;
 public class SVGApplication {
     Logger logger = LogManager.getLogger(SVGApplication.class);
     static final String SVG_NS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+    static final int WIDTH = 1200, HEIGHT = 600;
 
     protected JFrame frame;
     protected JSVGCanvas svgCanvas = new JSVGCanvas();
@@ -62,7 +67,7 @@ public class SVGApplication {
                 System.exit(0);
             }
         });
-        f.setSize(400, 400);
+        f.setSize(WIDTH, HEIGHT);
         f.pack();
         f.setVisible(true);
     }
@@ -79,6 +84,7 @@ public class SVGApplication {
         JButton buttonNewClass = getButtonNewClass();
         JButton buttonNewLine = getButtonNewLine();
         JButton buttonLoad = getButtonLoad(panel);
+        JButton buttonSave = getButtonSave(panel);
         ColorChooserButton colorChooser = new ColorChooserButton(Color.WHITE);
         colorChooser.addColorChangedListener(newColor -> {
             logger.info("color chosen{}",newColor);
@@ -88,6 +94,7 @@ public class SVGApplication {
 
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
         p.add(buttonLoad);
+        p.add(buttonSave);
         p.add(buttonNewClass);
         p.add(buttonNewLine);
         p.add(colorChooser);
@@ -130,8 +137,8 @@ public class SVGApplication {
     }
 
     private JButton getButtonLoad(JPanel panel) {
-        JButton buttonLoad = new JButton("Load...");
-        buttonLoad.addActionListener(ae -> {
+        JButton button = new JButton("Load...");
+        button.addActionListener(ae -> {
             JFileChooser fc = new JFileChooser(".");
             int choice = fc.showOpenDialog(panel);
             if (choice == JFileChooser.APPROVE_OPTION) {
@@ -143,7 +150,62 @@ public class SVGApplication {
                 }
             }
         });
-        return buttonLoad;
+        return button;
+    }
+
+    private JButton getButtonSave(JPanel panel){
+        JButton button = new JButton("Save");
+        button.addActionListener(ae -> {
+            JFileChooser fc = new JFileChooser(".");
+            int choice = fc.showOpenDialog(panel);
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File f = fc.getSelectedFile();
+
+                    byte[] fileData = new byte[0];
+                    try {
+                        fileData = transcodeToSVG(doc);
+                    } catch (TranscoderException e) {
+                        e.printStackTrace();
+                    }
+
+                    try (FileOutputStream fileSave = new FileOutputStream(f)) {
+                        fileSave.write(fileData);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+
+            }
+
+
+        });
+        return button;
+    }
+
+    public byte[] transcodeToSVG(Document doc) throws TranscoderException {
+
+        try {
+            //Determine output type:
+            SVGTranscoder t = new SVGTranscoder();
+
+            //Set transcoder input/output
+            TranscoderInput input = new TranscoderInput(doc);
+            ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+            OutputStreamWriter ostream = new OutputStreamWriter(bytestream, StandardCharsets.UTF_8);
+            TranscoderOutput output = new TranscoderOutput(ostream);
+
+            //Perform transcoding
+            t.transcode(input, output);
+            ostream.flush();
+            ostream.close();
+
+            return bytestream.toByteArray();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private void svgRendering() {
@@ -235,8 +297,8 @@ public class SVGApplication {
         Element rectangle = doc.createElementNS(SVG_NS, "rect");
         rectangle.setAttributeNS(null, "x", "0");
         rectangle.setAttributeNS(null, "y", "0");
-        rectangle.setAttributeNS(null, "width", "600");
-        rectangle.setAttributeNS(null, "height", "600");
+        rectangle.setAttributeNS(null, "width", String.valueOf(WIDTH));
+        rectangle.setAttributeNS(null, "height", String.valueOf(HEIGHT));
         rectangle.setAttributeNS(null, "style", "fill:none;pointer-events:fill");
         rectangle.setAttributeNS(null, "id", "glasspane");
         Element svgRoot = doc.getDocumentElement();
