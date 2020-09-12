@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 import se.ads.actions.OnClickAction;
@@ -140,14 +141,14 @@ public class SVGApplication {
     private JButton getButtonNewLine() {
         JButton buttonNewLine = new JButton("line");
         buttonNewLine.addActionListener(ae ->
-                ctx.setCurrentElementType(new LineElement( ctx)));
+                ctx.setCurrentElementType("line"));
         return buttonNewLine;
     }
 
     private JButton getButtonNewClass() {
         JButton buttonNewClass = new JButton("class");
         buttonNewClass.addActionListener(ae ->
-                ctx.setCurrentElementType(new RectElement( ctx)));
+                ctx.setCurrentElementType("rect"));
         return buttonNewClass;
     }
 
@@ -179,8 +180,16 @@ public class SVGApplication {
     }
 
     private void addEventHandlersForForElements(SVGDocument doc){
-        //doc.
+        Element objects = doc.getElementById("objects");
+        for (int c = 0; c < objects.getChildNodes().getLength(); c++){
+            Node n = objects.getChildNodes().item(c);
+            logger.info("Attach eventhandlers for childnode {}", n);
+            ctx.attachEventHandlers(n);
+        }
+
     }
+
+
 
     private JButton getButtonSave(JPanel panel){
         JButton button = new JButton("Save");

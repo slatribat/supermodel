@@ -15,5 +15,4 @@ public interface DrawElement{
     void changeColor( Color color);
     void highlight();
     void reset();
-    void attachEventHandlers(Element element);
 }

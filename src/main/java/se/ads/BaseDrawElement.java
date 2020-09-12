@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.events.EventTarget;
-import se.ads.actions.*;
 
 import java.awt.*;
 import java.util.regex.Matcher;
@@ -79,17 +77,5 @@ public class BaseDrawElement {
             width = Integer.valueOf(matcher.group(1));
         }
         return width;
-    }
-
-    public void attachEventHandlers(Element element){
-        EventTarget target = (EventTarget) element;
-        target.addEventListener("mousedown", new OnDownAction(ctx), false);
-        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
-        target.addEventListener("mouseup", new OnUpAction(ctx), false);
-        target.addEventListener("mouseover", new OnOverAction(ctx), false);
-        target.addEventListener("mouseout", evt -> {
-            //
-        }, false);
-        target.addEventListener("keydown", new OnKeyDownAction(ctx), false);
     }
 }

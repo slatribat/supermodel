@@ -5,6 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.events.EventTarget;
+import se.ads.actions.*;
 
 import javax.swing.*;
 import java.util.Map;
@@ -55,9 +58,9 @@ public class ApplicationContext {
         this.selectedItem = selectedItem;
         if (selectedItem != null) {
             if (selectedItem.getLocalName().matches("rect")) {
-                setCurrentElementType(rectElement);
+                setCurrentElementType("rect");
             } else if (selectedItem.getLocalName().matches("line")) {
-                setCurrentElementType(lineElement);
+                setCurrentElementType("line");
             }
 
             getCurrentElementType().highlight();
@@ -103,13 +106,15 @@ public class ApplicationContext {
         return currentElementType;
     }
 
-    public void setCurrentElementType(DrawElement currentElementType) {
-        if (currentElementType instanceof RectElement){
+    public void setCurrentElementType(String currentElementType) {
+        if (currentElementType.matches("rect")){
             rectElement = new RectElement( this);
-        } else if (currentElementType instanceof LineElement){
+            this.currentElementType = new RectElement( this);
+        } else if (currentElementType.matches("line")){
             lineElement = new LineElement( this);
+            this.currentElementType = new LineElement( this);
         }
-        this.currentElementType = currentElementType;
+
     }
 
     public int getLastX() {
@@ -118,5 +123,17 @@ public class ApplicationContext {
 
     public void setLastX(int lastX) {
         this.lastX = lastX;
+    }
+
+    public void attachEventHandlers(Node node){
+        EventTarget target = (EventTarget) node;
+        target.addEventListener("mousedown", new OnDownAction(this), false);
+        target.addEventListener("mousemove", new OnMoveAction(this), false);
+        target.addEventListener("mouseup", new OnUpAction(this), false);
+        target.addEventListener("mouseover", new OnOverAction(this), false);
+        target.addEventListener("mouseout", evt -> {
+            //
+        }, false);
+        target.addEventListener("keydown", new OnKeyDownAction(this), false);
     }
 }

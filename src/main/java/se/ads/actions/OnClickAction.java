@@ -32,7 +32,7 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
 
         if (ctx.getCurrentElementType() != null) {
             Element e = ctx.getCurrentElementType().placeNew(nowToX, nowToY);
-            ctx.getCurrentElementType().attachEventHandlers(e);
+            ctx.attachEventHandlers(e);
             if (e != null) {
                 Element elt = ctx.getDoc().getElementById("objects");
                 elt.appendChild(e);
