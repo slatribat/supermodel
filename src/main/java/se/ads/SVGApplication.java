@@ -1,5 +1,6 @@
 package se.ads;
 
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.bridge.UpdateManager;
 import org.apache.batik.swing.JSVGCanvas;
@@ -14,6 +15,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.util.SVGConstants;
+import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.DOMImplementation;
@@ -149,6 +151,18 @@ public class SVGApplication {
         return buttonNewClass;
     }
 
+    private static SVGDocument loadSVGDocument(String uri) {
+        String parser = XMLResourceDescriptor.getXMLParserClassName();
+        SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
+        SVGDocument svgDocument = null;
+        try {
+            svgDocument = factory.createSVGDocument(uri);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return svgDocument;
+    }
+
     private JButton getButtonLoad(JPanel panel) {
         JButton button = new JButton("Load...");
         button.addActionListener(ae -> {
@@ -156,13 +170,8 @@ public class SVGApplication {
             int choice = fc.showOpenDialog(panel);
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File f = fc.getSelectedFile();
-                try {
-                    svgCanvas.setURI(f.toURL().toString());
-                    Document loadedDoc = svgCanvas.getSVGDocument();
-                    svgRendering(loadedDoc);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                SVGDocument loadedDoc = loadSVGDocument(f.getAbsolutePath());
+                svgRendering(loadedDoc);
             }
         });
         return button;
