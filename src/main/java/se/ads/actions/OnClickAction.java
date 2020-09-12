@@ -4,7 +4,6 @@ import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.svg.SVGOMPoint;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
-import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGLocatable;
 import org.w3c.dom.svg.SVGMatrix;
 import se.ads.ApplicationContext;
@@ -33,11 +32,12 @@ public class OnClickAction implements org.w3c.dom.events.EventListener {
 
         if (ctx.getCurrentElementType() != null) {
             Element e = ctx.getCurrentElementType().placeNew(nowToX, nowToY);
+            ctx.getCurrentElementType().attachEventHandlers(e);
             if (e != null) {
                 Element elt = ctx.getDoc().getElementById("objects");
                 elt.appendChild(e);
                 ctx.setSelectedItem(e);
-                ((EventTarget) e).addEventListener("keydown", new OnKeyDownAction(ctx), false);
+
             }
         }
     }

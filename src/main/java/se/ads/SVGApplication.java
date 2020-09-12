@@ -172,9 +172,14 @@ public class SVGApplication {
                 File f = fc.getSelectedFile();
                 SVGDocument loadedDoc = loadSVGDocument(f.getAbsolutePath());
                 svgRendering(loadedDoc);
+                addEventHandlersForForElements(loadedDoc);
             }
         });
         return button;
+    }
+
+    private void addEventHandlersForForElements(SVGDocument doc){
+        //doc.
     }
 
     private JButton getButtonSave(JPanel panel){

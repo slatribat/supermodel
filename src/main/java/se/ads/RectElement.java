@@ -2,11 +2,6 @@ package se.ads;
 
 import org.apache.batik.dom.svg.SVGOMPoint;
 import org.w3c.dom.Element;
-import org.w3c.dom.events.EventTarget;
-import se.ads.actions.OnDownAction;
-import se.ads.actions.OnMoveAction;
-import se.ads.actions.OnOverAction;
-import se.ads.actions.OnUpAction;
 
 public class RectElement extends BaseDrawElement implements DrawElement{
 
@@ -25,12 +20,6 @@ public class RectElement extends BaseDrawElement implements DrawElement{
         element.setAttribute("style", styleType+":"+ rgbcolor);
         element.setAttribute("fill-opacity", opacity);
         element.setAttribute("fill", fillColor);
-
-        EventTarget target = (EventTarget) element;
-        target.addEventListener("mousedown", new OnDownAction(ctx), false);
-        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
-        target.addEventListener("mouseup", new OnUpAction(ctx), false);
-        target.addEventListener("mouseover", new OnOverAction(ctx), false);
 
         return element;
     }

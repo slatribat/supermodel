@@ -2,10 +2,6 @@ package se.ads;
 
 import org.apache.batik.dom.svg.SVGOMPoint;
 import org.w3c.dom.Element;
-import org.w3c.dom.events.EventTarget;
-import se.ads.actions.OnDownAction;
-import se.ads.actions.OnMoveAction;
-import se.ads.actions.OnUpAction;
 
 /**
  * Created by ansi on 2017-05-15.
@@ -24,14 +20,6 @@ public class LineElement extends BaseDrawElement implements DrawElement{
         element.setAttribute("x2", "0");
         element.setAttribute("y2", "0");
         element.setAttribute("style", "stroke:rgb(255,0,0);stroke-width:2");
-
-        EventTarget target = (EventTarget) element;
-        target.addEventListener("mousedown", new OnDownAction(ctx), false);
-        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
-        target.addEventListener("mouseup", new OnUpAction(ctx), false);
-        target.addEventListener("mouseout", evt -> {
-            //
-        }, false);
 
         return element;
     }
