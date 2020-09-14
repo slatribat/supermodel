@@ -1,5 +1,6 @@
-editera element uppskapade från fil
-ändra längd på line
+Ändra längd på line
+Highligt objekt på mouseover för att lättare klicka rätt
+Namn på klasserna
 lägg menyknapp på objekt - öppna balloon
 menyknapp
  - sätt text

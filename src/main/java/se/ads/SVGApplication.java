@@ -221,29 +221,27 @@ public class SVGApplication {
 
     public byte[] transcodeToSVG(Document doc) throws TranscoderException {
 
-        try {
+        ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
+        try (OutputStreamWriter ostream = new OutputStreamWriter(bytestream, StandardCharsets.UTF_8)){
             //Determine output type:
             SVGTranscoder t = new SVGTranscoder();
 
             //Set transcoder input/output
             TranscoderInput input = new TranscoderInput(doc);
-            ByteArrayOutputStream bytestream = new ByteArrayOutputStream();
-            OutputStreamWriter ostream = new OutputStreamWriter(bytestream, StandardCharsets.UTF_8);
             TranscoderOutput output = new TranscoderOutput(ostream);
 
             //Perform transcoding
             t.transcode(input, output);
             ostream.flush();
-            ostream.close();
 
-            return bytestream.toByteArray();
+
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        return null;
+        return bytestream.toByteArray();
     }
 
     private void svgRendering(Document doc) {
