@@ -31,10 +31,10 @@ public class RectElement extends BaseDrawElement implements DrawElement{
     }
 
     private float getMiddleX(Element element, SVGOMPoint dragpt){
-        return dragpt.getX() - Float.valueOf(element.getAttribute("width")) / 2;
+        return dragpt.getX() - Float.parseFloat(element.getAttribute("width")) / 2;
     }
     private float getMiddleY(Element element, SVGOMPoint dragpt){
-        return dragpt.getY() - Float.valueOf(element.getAttribute("height")) / 2;
+        return dragpt.getY() - Float.parseFloat(element.getAttribute("height")) / 2;
     }
 
     @Override

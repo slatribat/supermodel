@@ -1,4 +1,5 @@
 Ändra längd på line
+FLytta line, blocka att man rör musen för snabbt och tappar elementet
 Highligt objekt på mouseover för att lättare klicka rätt
 Namn på klasserna
 lägg menyknapp på objekt - öppna balloon
