@@ -7,7 +7,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.events.EventTarget;
-import se.ads.actions.*;
+import se.ads.actions.OnDownAction;
+import se.ads.actions.OnKeyDownAction;
+import se.ads.actions.OnUpAction;
 
 import javax.swing.*;
 import java.util.Map;
@@ -128,9 +130,9 @@ public class ApplicationContext {
     public void attachEventHandlers(Node node){
         EventTarget target = (EventTarget) node;
         target.addEventListener("mousedown", new OnDownAction(this), false);
-        target.addEventListener("mousemove", new OnMoveAction(this), false);
+        //target.addEventListener("mousemove", new OnMoveAction(this), false);
         target.addEventListener("mouseup", new OnUpAction(this), false);
-        target.addEventListener("mouseover", new OnOverAction(this), false);
+        //target.addEventListener("mouseover", new OnOverAction(this), false);
         target.addEventListener("mouseout", evt -> {
             //
         }, false);

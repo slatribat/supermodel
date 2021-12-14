@@ -2,7 +2,6 @@ package se.ads.actions;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
-import org.w3c.dom.svg.SVGLocatable;
 import se.ads.ApplicationContext;
 
 public class OnDownAction implements org.w3c.dom.events.EventListener {
@@ -15,10 +14,7 @@ public class OnDownAction implements org.w3c.dom.events.EventListener {
 
     @Override
     public void handleEvent(Event evt) {
-        SVGLocatable thisNode = (SVGLocatable) evt.getTarget();
         ctx.setSelectedItem((Element) evt.getTarget());
         ctx.setDrag(ApplicationContext.DRAG_DOWN);
-
-
     }
 }

@@ -25,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.svg.SVGDocument;
 import se.ads.actions.OnClickAction;
+import se.ads.actions.OnMoveAction;
 import se.ads.actions.OnUpAction;
 
 import javax.swing.*;
@@ -290,8 +291,8 @@ public class SVGApplication {
         Element elt = svgCanvas.getSVGDocument().getElementById("glasspane");
         EventTarget target = (EventTarget) elt;
 
-                /*target.addEventListener("mousedown", new OnDownAction(ctx), false);
-                 target.addEventListener("mousemove", new OnMoveAction(ctx), false);*/
+                /*target.addEventListener("mousedown", new OnDownAction(ctx), false);*/
+        target.addEventListener("mousemove", new OnMoveAction(ctx), false);
         target.addEventListener("mouseup", new OnUpAction(ctx), false);
         /*target.addEventListener("mouseout", new OnUpAction(ctx), false);*/
         target.addEventListener("click", new OnClickAction(ctx), false);

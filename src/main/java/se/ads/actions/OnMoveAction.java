@@ -2,6 +2,8 @@ package se.ads.actions;
 
 import org.apache.batik.dom.events.DOMMouseEvent;
 import org.apache.batik.dom.svg.SVGOMPoint;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
@@ -10,6 +12,8 @@ import org.w3c.dom.svg.SVGMatrix;
 import se.ads.ApplicationContext;
 
 public class OnMoveAction implements EventListener {
+    Logger logger = LogManager.getLogger(OnMoveAction.class);
+
     ApplicationContext ctx;
 
     public OnMoveAction(ApplicationContext applicationContext){
@@ -18,7 +22,9 @@ public class OnMoveAction implements EventListener {
 
     @Override
     public void handleEvent(Event evt) {
+        logger.info("handle event");
         if (ctx.getDrag() == ApplicationContext.DRAG_DOWN){
+            logger.info("drag down pressed");
             DOMMouseEvent elEvt = (DOMMouseEvent) evt;
             int nowToX = elEvt.getClientX();
             int nowToY = elEvt.getClientY();
